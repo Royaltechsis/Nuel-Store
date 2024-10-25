@@ -110,54 +110,71 @@ function AdminDashboard() {
   };
 
   return (
-    <div>
-      <Typography variant="h4" className="mb-4">Admin Dashboard</Typography>
+    <div className="bg-gray-100 min-h-screen p-6">
+      <Typography variant="h4" className="mb-6 text-center font-bold text-blue-600">Admin Dashboard</Typography>
 
-      <Typography variant="h6">{editingProductId ? 'Edit Product' : 'Add New Product'}</Typography>
-      <TextField
-        label="Product Name"
-        value={newProduct.name}
-        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-        className="mr-2"
-      />
-      <TextField
-        label="Price"
-        value={newProduct.price}
-        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-        className="mr-2"
-      />
-      <TextField
-        label="Description"
-        value={newProduct.description}
-        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-        className="mr-2"
-      />
-      <Select
-        value={newProduct.category}
-        onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-        displayEmpty
-        className="mr-2"
-      >
-        <MenuItem value="" disabled>Select Category</MenuItem>
-        {categories.map((category) => (
-          <MenuItem key={category} value={category}>
-            {category}
-          </MenuItem>
-        ))}
-      </Select>
-      <input
-        type="file"
-        onChange={(e) => setImageFile(e.target.files[0])}
-        className="mr-2"
-      />
-      {editingProductId ? (
-        <Button variant="contained" color="primary" onClick={() => handleSaveProduct(editingProductId)}>Save Product</Button>
-      ) : (
-        <Button variant="contained" color="primary" onClick={handleAddProduct}>Add Product</Button>
-      )}
+      <div className="bg-white p-4 rounded shadow-md mb-6">
+        <Typography variant="h6" className="mb-4">{editingProductId ? 'Edit Product' : 'Add New Product'}</Typography>
+        
+        <div className="flex flex-wrap mb-4">
+          <TextField
+            label="Product Name"
+            value={newProduct.name}
+            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+            className="mr-2 mb-2"
+            variant="outlined"
+            fullWidth
+          />
+          <TextField
+            label="Price"
+            value={newProduct.price}
+            onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+            className="mr-2 mb-2"
+            variant="outlined"
+            fullWidth
+          />
+        </div>
 
-      <Typography variant="h6" className="mt-4">Product List</Typography>
-      <TableContainer component={Paper}>
+        <TextField
+          label="Description"
+          value={newProduct.description}
+          onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+          className="mb-2"
+          variant="outlined"
+          fullWidth
+        />
+
+        <Select
+          value={newProduct.category}
+          onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+          displayEmpty
+          className="mb-2"
+          variant="outlined"
+          fullWidth
+        >
+          <MenuItem value="" disabled>Select Category</MenuItem>
+          {categories.map((category) => (
+            <MenuItem key={category} value={category}>
+              {category}
+            </MenuItem>
+          ))}
+        </Select>
+
+        <input
+          type="file"
+          onChange={(e) => setImageFile(e.target.files[0])}
+          className="mb-2"
+        />
+
+        {editingProductId ? (
+          <Button variant="contained" color="primary" onClick={() => handleSaveProduct(editingProductId)}>Save Product</Button>
+        ) : (
+          <Button variant="contained" color="primary" onClick={handleAddProduct}>Add Product</Button>
+        )}
+      </div>
+
+      <Typography variant="h6" className="mt-4 text-center">Product List</Typography>
+      <TableContainer component={Paper} className="mb-6">
         <Table>
           <TableHead>
             <TableRow>
@@ -177,7 +194,7 @@ function AdminDashboard() {
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>
-                  <img src={product.imageUrl} alt={product.name} style={{ width: '50px' }} />
+                  <img src={product.imageUrl} alt={product.name} style={{ width: '50px', borderRadius: '4px' }} />
                 </TableCell>
                 <TableCell>
                   <Button variant="outlined" color="secondary" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
