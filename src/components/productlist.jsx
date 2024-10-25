@@ -99,6 +99,7 @@ function Products() {
                   variant="contained"
                   color="primary"
                   onClick={(e) => {
+                    e.preventDefault(); // Prevent the link click
                     e.stopPropagation(); // Prevent the link click
                     handleAddToCart(product);
                   }}

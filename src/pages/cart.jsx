@@ -1,12 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../services/CartContext';
-import { Typography, Button, TextField, Box } from '@mui/material';
+import { Typography, Button, TextField } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
   const [quantities, setQuantities] = useState({});
+
   const navigate = useNavigate();
+
+  // Load quantities from local storage when the component mounts
+  useEffect(() => {
+    const savedQuantities = localStorage.getItem('quantities');
+    if (savedQuantities) {
+      setQuantities(JSON.parse(savedQuantities));
+    }
+  }, []);
+
+  // Save quantities to local storage whenever they change
+  useEffect(() => {
+    localStorage.setItem('quantities', JSON.stringify(quantities));
+  }, [quantities]);
 
   // Handle quantity change
   const handleQuantityChange = (id, value) => {
