@@ -1,5 +1,3 @@
-// src/components/Products.js
-
 import React, { useEffect, useState, useContext } from 'react';
 import { Button, TextField, Snackbar, Alert } from '@mui/material';
 import { CartContext } from '../services/CartContext';
@@ -58,30 +56,55 @@ function Products() {
   return (
     <section className="py-12 bg-white sm:py-16 lg:py-20">
       <div className="flex flex-col sm:flex-row max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <aside className="w-full sm:w-1/4 p-4 bg-gray-100 rounded-lg sticky top-0 h-min">
-          <h3 className="text-lg font-semibold">Categories</h3>
-          <ul className="mt-2">
+        
+        {/* Sticky Sidebar for Categories (Desktop and Tablet) */}
+        <div className="hidden sm:block sm:w-1/4 lg:w-1/5 sticky top-20 h-auto">
+          <h3 className="text-lg font-semibold mb-4">Categories</h3>
+          <ul className="bg-gray-100 rounded-lg p-4">
+            <li>
+              <button
+                onClick={() => setSelectedCategory('')}
+                className={`block w-full text-left py-2 px-3 rounded-lg hover:bg-gray-200 ${
+                  !selectedCategory ? 'bg-gray-200' : ''
+                }`}
+              >
+                All Categories
+              </button>
+            </li>
             {categories.map((category) => (
               <li key={category}>
                 <button
                   onClick={() => setSelectedCategory(category)}
-                  className={`w-full text-left py-2 px-4 rounded hover:bg-gray-200 ${selectedCategory === category ? 'bg-gray-300' : ''}`}
+                  className={`block w-full text-left py-2 px-3 rounded-lg hover:bg-gray-200 ${
+                    selectedCategory === category ? 'bg-gray-200' : ''
+                  }`}
                 >
                   {category}
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                onClick={() => setSelectedCategory('')}
-                className={`w-full text-left py-2 px-4 rounded hover:bg-gray-200 ${!selectedCategory ? 'bg-gray-300' : ''}`}
-              >
-                All Categories
-              </button>
-            </li>
           </ul>
-        </aside>
+        </div>
 
+        {/* Mobile Category Dropdown */}
+        <div className="block sm:hidden mb-4 sticky top-5">
+          <label htmlFor="categorySelect" className="block text-lg font-semibold mb-2">Select Category</label>
+          <select
+            id="categorySelect"
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+            }}
+            className="w-full p-2 border rounded-lg"
+          >
+            <option value="">All Categories</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Main Content */}
         <div className="flex-1 mt-4 sm:mt-0 sm:ml-4">
           <div className="max-w-md mx-auto text-center">
             <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Our Featured Items</h2>

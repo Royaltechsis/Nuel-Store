@@ -127,6 +127,12 @@ function Header() {
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
               )}
+              <ListItem button component={Link} to="/cart" className="text-base font-medium text-black hover:text-blue-600">
+                <IconButton>
+                  <ShoppingCartIcon />
+                </IconButton>
+                <ListItemText primary="Cart" />
+              </ListItem>
               {user ? (
                 <ListItem button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
                   <ListItemText primary="Logout" />
