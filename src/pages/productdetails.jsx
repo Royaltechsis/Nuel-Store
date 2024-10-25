@@ -1,10 +1,8 @@
-// src/components/ProductDetails.js
-
 import React, { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Typography } from '@mui/material'; // Ensure you have @mui/material installed
-import products from '../components/productdata'; // Adjust the path according to your project structure
-import { CartContext } from '../services/CartContext'; // Adjust the path according to your context structure
+import { Button, Typography } from '@mui/material';
+import products from '../components/productdata'; 
+import { CartContext } from '../services/CartContext'; 
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -34,22 +32,14 @@ const ProductDetails = () => {
           Category: {product.category}
         </Typography>
         <Typography variant="h6" className="mb-4">
-          Price: ${Number(product.price.replace(/[$,]/g, '')).toFixed(2)} {/* Parse the price */}
+          Price: ${Number(product.price.replace(/[$,]/g, '')).toFixed(2)}
         </Typography>
         
         <div className="product-actions flex space-x-4">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleBuyNow}
-          >
+          <Button variant="contained" color="primary" onClick={handleBuyNow}>
             Buy Now
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => navigate(-1)}
-          >
+          <Button variant="outlined" color="secondary" onClick={() => navigate(-1)}>
             Back
           </Button>
         </div>

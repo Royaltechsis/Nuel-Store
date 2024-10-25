@@ -57,7 +57,7 @@ function Products() {
   });
 
   const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`); // Navigate to the product details page
+    navigate(`./product/${productId}`); // Navigate to the product details page
   };
 
   return (

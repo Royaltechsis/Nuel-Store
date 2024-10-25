@@ -10,25 +10,24 @@ import Products from './pages/products.jsx';
 import Cart from './pages/cart.jsx';
 import Checkout from './pages/checkout.jsx';
 import Footer from './components/footer.jsx';
-import AdminDashboard from './pages/admindashboard.jsx'; // Ensure correct import
+import AdminDashboard from './pages/admindashboard.jsx'; 
 import { auth } from './firebase'; 
 import { CartProvider } from './services/CartContext'; 
-import { doc, getDoc } from 'firebase/firestore'; // Import Firestore functions
-import { db } from './firebase'; // Import Firestore instance
+import { doc, getDoc } from 'firebase/firestore'; 
+import { db } from './firebase'; 
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false); // Track if the user is an admin
+    const [isAdmin, setIsAdmin] = useState(false); 
   
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 setIsAuthenticated(true);
-                // Fetch user role from Firestore
                 const userDoc = await getDoc(doc(db, 'users', user.uid));
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
-                    setIsAdmin(userData.role === 'admin'); // Check if user is admin
+                    setIsAdmin(userData.role === 'admin');
                 }
             } else {
                 setIsAuthenticated(false);
@@ -45,6 +44,7 @@ function App() {
                 <Header />
                 <main className="flex-grow">
                     <Routes>
+                        {/* Routes for unauthenticated users */}
                         {!isAuthenticated ? (
                             <>
                                 <Route path="/login" element={<Login />} />
@@ -53,6 +53,7 @@ function App() {
                             </>
                         ) : (
                             <>
+                                {/* Routes for authenticated users */}
                                 <Route path="/" element={<Home />} />
                                 <Route path="/shop" element={<Shop />} />
                                 <Route path="/products/:id" element={<ProductDetails />} />
@@ -60,9 +61,9 @@ function App() {
                                 <Route path="/cart" element={<Cart />} />
                                 <Route path="/checkout" element={<Checkout />} />
                                 
-                                {/* Correct the admin route */}
+                                {/* Admin dashboard route */}
                                 <Route 
-                                    path="/admindashboard" // Ensure path matches the one you're trying to access
+                                    path="/admindashboard"
                                     element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />} 
                                 />
                                 {/* Redirect logged-in users from login and signup pages */}
