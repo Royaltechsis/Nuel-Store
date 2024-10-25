@@ -1,13 +1,15 @@
+// src/components/ProductDetails.js
+
 import React, { useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Typography, Button } from '@mui/material';
-import products from '../components/productdata';
-import { CartContext } from '../services/CartContext'; // Adjust the import path
+import { Button, Typography } from '@mui/material'; // Ensure you have @mui/material installed
+import products from '../components/productdata'; // Adjust the path according to your project structure
+import { CartContext } from '../services/CartContext'; // Adjust the path according to your context structure
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useContext(CartContext); // Access the addToCart function
+  const { addToCart } = useContext(CartContext);
   const product = products.find((p) => p.id === parseInt(id));
 
   if (!product) {
@@ -15,40 +17,43 @@ const ProductDetails = () => {
   }
 
   const handleBuyNow = () => {
-    addToCart(product); // Add the product to the cart
-    navigate('/cart'); // Navigate to the cart page
+    addToCart(product);
+    navigate('/cart');
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg">
-      <Typography variant="h4" className="font-bold mb-4">
-        {product.name}
-      </Typography>
-      <Typography variant="h6" className="mb-4">
-        Category: {product.category}
-      </Typography>
-      <Typography variant="h6" className="mb-4">
-        Price: {product.price}
-      </Typography>
-
-      <Button
-        variant="contained"
-        color="primary"
-        className="mt-4"
-        onClick={handleBuyNow} // Call the handleBuyNow function
-      >
-        Buy Now
-      </Button>
-
-      {/* Back Button */}
-      <Button
-        variant="outlined"
-        color="secondary"
-        className="mt-4 ml-4"
-        onClick={() => navigate(-1)}
-      >
-        Back
-      </Button>
+    <div className="product-details-container">
+      <div className="product-image">
+        <img src={product.image} alt={product.name} className="rounded-lg shadow-md w-full h-auto" />
+      </div>
+      <div className="product-info p-4">
+        <Typography variant="h4" className="font-bold mb-2">
+          {product.name}
+        </Typography>
+        <Typography variant="h6" className="mb-2">
+          Category: {product.category}
+        </Typography>
+        <Typography variant="h6" className="mb-4">
+          Price: ${Number(product.price.replace(/[$,]/g, '')).toFixed(2)} {/* Parse the price */}
+        </Typography>
+        
+        <div className="product-actions flex space-x-4">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

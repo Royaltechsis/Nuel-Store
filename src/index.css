@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.product-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px; /* Adjust the max-width as necessary */
+    margin: auto; /* Center the container */
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-image img {
+    border-radius: 8px;
+    max-width: 100%; /* Responsive image */
+    height: auto;
+  }
+  
+  .product-info {
+    text-align: center; /* Center text in the product info section */
+  }
+  
+  .product-actions {
+    display: flex;
+    justify-content: center; /* Center the action buttons */
+    margin-top: 16px;
+  }
+  

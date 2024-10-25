@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Button, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Button, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'; // Cart icon
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Profile icon
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../firebase'; // Import your Firebase auth
-import { signOut } from 'firebase/auth'; // Import signOut function
-import { doc, getDoc } from 'firebase/firestore'; // Import Firestore functions
-import { db } from '../firebase'; // Import your Firestore instance
+import { auth } from '../firebase'; // Import Firebase auth
+import { signOut } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [user, setUser] = useState(null); // State to hold user info
-  const [isAdmin, setIsAdmin] = useState(false); // State to determine if user is admin
-  const navigate = useNavigate(); // Use navigate to redirect after logout
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   // Function to toggle the drawer menu
   const toggleDrawer = (open) => (event) => {
@@ -21,108 +23,124 @@ function Header() {
     setDrawerOpen(open);
   };
 
-  // Links for navigation
-  const navLinks = [
-    { title: 'Home', path: '/' },
-    { title: 'Products', path: '/products' },
-    { title: 'About', path: '/about' },
-    { title: 'Contact', path: '/contact' },
-  ];
-
-  // Function to handle logout
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setUser(null); // Clear user state
-      setIsAdmin(false); // Clear admin state
-      navigate('/'); // Redirect to home page after logout
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
   // Monitor authentication state and fetch user role
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        const userDoc = await getDoc(doc(db, 'users', currentUser.uid)); // Get the user document
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setIsAdmin(userData.role === 'admin'); // Check if user is admin
+          setIsAdmin(userData.role === 'admin');
         }
       } else {
-        setIsAdmin(false); // Reset admin state if no user is logged in
+        setIsAdmin(false);
       }
     });
 
-    return () => unsubscribe(); // Clean up the subscription
+    return () => unsubscribe();
   }, []);
 
-  // Function to render navigation links
-  const renderNavLinks = (isMobile = false) => (
-    <>
-      {navLinks.map((link) => (
-        <ListItem button key={link.title} component={Link} to={link.path}>
-          <ListItemText primary={link.title} />
-        </ListItem>
-      ))}
-      {isAdmin && (
-        <ListItem button component={Link} to="/admindashboard">
-          <ListItemText primary="Admin Dashboard" />
-        </ListItem>
-      )}
-      {user && (
-        <ListItem button onClick={handleLogout}>
-          <ListItemText primary="Logout" />
-        </ListItem>
-      )}
-    </>
-  );
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setIsAdmin(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
-    <>
-      {/* AppBar for the header */}
-      <AppBar position="static" className="bg-blue-600">
-        <Toolbar className="flex justify-between">
-          {/* Logo */}
-          <Typography variant="h6" className="text-white font-bold">
-            Nuel's Store
-          </Typography>
+    <header className="bg-white pb-6 lg:pb-0 shadow-md">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        {/* Large screen navigation */}
+        <nav className="flex items-center justify-between h-16 lg:h-20">
+          <Link to="/" className="flex-shrink-0">
+            <h1 className='text-2xl font-bold text-blue-600'>Nuel's Store</h1>
+          </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex space-x-4">
-            {renderNavLinks()}
+          <div className="hidden lg:flex lg:items-center lg:ml-auto lg:space-x-10">
+            <Link to="/" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Home</Link>
+            <Link to="/products" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Products</Link>
+            <Link to="/about" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">About</Link>
+            <Link to="/contact" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Contact</Link>
+            {isAdmin && (
+              <Link to="/admindashboard" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">
+                Admin Dashboard
+              </Link>
+            )}
+            <IconButton component={Link} to="/cart" className="text-black hover:text-blue-600">
+              <ShoppingCartIcon />
+            </IconButton>
+            <IconButton component={Link} to="/profile" className="text-black hover:text-blue-600">
+              <AccountCircleIcon />
+            </IconButton>
+            {user ? (
+              <Button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+                Logout
+              </Button>
+            ) : (
+              <Link to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+                Get Started Now
+              </Link>
+            )}
           </div>
 
-          {/* Hamburger Menu for Mobile */}
+          {/* Mobile menu button */}
           <IconButton
-            edge="start"
+            edge="end"
             color="inherit"
             aria-label="menu"
-            aria-haspopup="true"
             onClick={toggleDrawer(true)}
-            className="md:hidden"
+            className="sm:hidden"
           >
-            <MenuIcon />
+            <MenuIcon className="text-black sm:hidden" />
           </IconButton>
-        </Toolbar>
-      </AppBar>
+        </nav>
 
-      {/* Drawer for mobile navigation */}
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <div
-          className="w-64"
-          role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-        >
-          <List>
-            {renderNavLinks(true)}
-          </List>
-        </div>
-      </Drawer>
-    </>
+        {/* Mobile drawer */}
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+          <div
+            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md"
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
+            <List className="px-6 space-y-1">
+              <ListItem button component={Link} to="/" className="text-base font-medium text-black hover:text-blue-600">
+                <ListItemText primary="Home" />
+              </ListItem>
+              <ListItem button component={Link} to="/products" className="text-base font-medium text-black hover:text-blue-600">
+                <ListItemText primary="Products" />
+              </ListItem>
+              <ListItem button component={Link} to="/about" className="text-base font-medium text-black hover:text-blue-600">
+                <ListItemText primary="About" />
+              </ListItem>
+              <ListItem button component={Link} to="/contact" className="text-base font-medium text-black hover:text-blue-600">
+                <ListItemText primary="Contact" />
+              </ListItem>
+              {isAdmin && (
+                <ListItem button component={Link} to="/admindashboard" className="text-base font-medium text-black hover:text-blue-600">
+                  <ListItemText primary="Admin Dashboard" />
+                </ListItem>
+              )}
+              {user ? (
+                <ListItem button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+                  <ListItemText primary="Logout" />
+                </ListItem>
+              ) : (
+                <ListItem button component={Link} to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+                  <ListItemText primary="Get Started Now" />
+                </ListItem>
+              )}
+            </List>
+          </div>
+        </Drawer>
+      </div>
+    </header>
   );
 }
 
