@@ -3,7 +3,7 @@
 import React from 'react';
 import Slider from 'react-slick'; // Import React Slick
 import { Icon } from '@mui/material'; // Import Material UI's Icon
-import CategoryCard from './CategoryCard';
+import CategoryCard from './categorycard';
 
 
 import 'slick-carousel/slick/slick.css'; 
