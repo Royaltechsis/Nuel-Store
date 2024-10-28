@@ -1,15 +1,18 @@
-// pages/Checkout.jsx
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../services/CartContext';
 import { Typography, TextField, Button, Radio, RadioGroup, FormControlLabel, Modal, Box } from '@mui/material';
+import { collection, addDoc } from 'firebase/firestore';
+import { db, auth } from '../firebase'; // Ensure auth is imported for user info
 
 function Checkout() {
   const { cart } = useContext(CartContext);
   const [paymentMethod, setPaymentMethod] = useState('creditCard');
   const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
+  const [username, setUsername] = useState('Anonymous'); // State for username
+  const [email, setEmail] = useState('No Email'); // State for email
+  const navigate = useNavigate();
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
@@ -20,14 +23,44 @@ function Checkout() {
     setCardDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setIsModalOpen(true);
+
+    // Get the authenticated user's details
+    const user = auth.currentUser;
+    setUsername(user?.displayName || 'Anonymous');
+    setEmail(user?.email || 'No Email');
+
+    // Add each cart item to Firestore with user info
+    try {
+      const promises = cart.map(async (item) => {
+        const purchaseData = {
+          name: item.name,
+          description: item.description,
+          price: item.price,
+          paymentMethod,
+          quantity: item.quantity, // Adding the quantity field here
+          purchasedAt: new Date(),
+          // purchasedBy: {
+          //   username: user?.displayName || 'Anonymous',
+          //   email: user?.email || 'No Email',
+          // },
+          purchasedby: user?.email,
+        };
+        await addDoc(collection(db, 'purchases'), purchaseData);
+      });
+
+      await Promise.all(promises);
+      console.log("All items added to 'purchases' collection successfully.");
+    } catch (error) {
+      console.error("Error adding items to purchases:", error);
+    }
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    navigate('/'); // Redirect to home page
+    navigate('/');
   };
 
   return (
@@ -99,14 +132,19 @@ function Checkout() {
             </Button>
           </div>
 
-          {/* Watermark */}
           <div className="absolute inset-0 flex justify-center items-center opacity-10 text-6xl font-bold text-gray-500">
             UNVERIFIED
           </div>
 
           <h2 className="text-center text-2xl font-bold mb-4">Order Receipt</h2>
           
-          {/* Receipt Content */}
+          {/* Purchaser Info */}
+          <div className="text-center mb-4">
+            <p className="font-semibold">Purchased By:</p>
+            <p>{username}</p>
+            <p>{email}</p>
+          </div>
+
           <div className="space-y-4">
             {cart.map((item, index) => (
               <div key={index} className="flex justify-between border-b pb-2">
@@ -115,17 +153,16 @@ function Checkout() {
                   <p className="text-gray-500">{item.description}</p>
                 </div>
                 <p className="font-semibold">
-                  ${parseFloat(item.price || 0).toFixed(2)}
+                  NGN {parseFloat(item.price || 0).toFixed(2)}
                 </p>
               </div>
             ))}
             <div className="mt-6 flex justify-between font-bold text-lg">
               <p>Total</p>
-              <p>${cart.reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2)}</p>
+              <p>NGN {cart.reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2)}</p>
             </div>
           </div>
 
-          {/* Download and Close Buttons */}
           <Button color="primary" variant="contained" className="mt-4 w-full" onClick={handleCloseModal}>
             Download as PDF
           </Button>

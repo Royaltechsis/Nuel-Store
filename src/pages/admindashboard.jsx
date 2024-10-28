@@ -1,3 +1,4 @@
+// pages/AdminDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import {
   Typography,
@@ -23,7 +24,7 @@ import { Navigate } from 'react-router-dom';
 const categories = ['Gadgets', 'Accessories', 'Software', 'Services', 'Phones', 'Wearables'];
 
 function AdminDashboard() {
-  const [tabIndex, setTabIndex] = useState(0); // 0: Products, 1: Purchases
+  const [tabIndex, setTabIndex] = useState(0);
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '', category: '' });
   const [imageFile, setImageFile] = useState(null);
@@ -32,7 +33,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [editingProductId, setEditingProductId] = useState(null);
 
-  // Fetch products from Firestore
+  // Fetch Products
   useEffect(() => {
     const fetchProducts = async () => {
       const productsCollection = collection(db, 'products');
@@ -43,7 +44,7 @@ function AdminDashboard() {
     fetchProducts();
   }, []);
 
-  // Fetch purchases from Firestore
+  // Fetch Purchases
   useEffect(() => {
     const fetchPurchases = async () => {
       const purchasesCollection = collection(db, 'purchases');
@@ -54,7 +55,7 @@ function AdminDashboard() {
     fetchPurchases();
   }, []);
 
-  // Check if user is admin
+  // Check Admin Role
   useEffect(() => {
     const checkAdmin = async () => {
       const user = auth.currentUser;
@@ -72,27 +73,18 @@ function AdminDashboard() {
     checkAdmin();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!isAdmin) return <Navigate to="/" />;
 
-  if (isAdmin === false) {
-    return <Navigate to="/" />;
-  }
-
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  };
+  const handleTabChange = (event, newValue) => setTabIndex(newValue);
 
   const handleAddProduct = async () => {
     const { name, price, description, category } = newProduct;
-
     if (name && price && imageFile && category) {
       const storageRef = ref(storage, `productImages/${imageFile.name}`);
       const snapshot = await uploadBytes(storageRef, imageFile);
       const imageUrl = await getDownloadURL(snapshot.ref);
       const productData = { name, price, description, imageUrl, category };
-
       const addedProductDoc = await addDoc(collection(db, 'products'), productData);
       setProducts([...products, { id: addedProductDoc.id, ...productData }]);
       setNewProduct({ name: '', price: '', description: '', category: '' });
@@ -105,152 +97,127 @@ function AdminDashboard() {
     setProducts(products.filter(product => product.id !== id));
   };
 
-  const handleEditProduct = (product) => {
-    setEditingProductId(product.id);
-    setNewProduct({ name: product.name, price: product.price, description: product.description, category: product.category });
-  };
-
-  const handleSaveProduct = async (id) => {
+  const handleEditProduct = async () => {
     const { name, price, description, category } = newProduct;
     const updatedData = { name, price, description, category };
-
-    const productDocRef = doc(db, 'products', id);
-    const productDoc = await getDoc(productDocRef);
-
-    if (productDoc.exists()) {
-      if (imageFile) {
-        const storageRef = ref(storage, `productImages/${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-        const imageUrl = await getDownloadURL(snapshot.ref);
-        updatedData.imageUrl = imageUrl;
-      }
-
-      await updateDoc(productDocRef, updatedData);
-      setProducts(products.map(product => product.id === id ? { ...product, ...updatedData } : product));
-      setEditingProductId(null);
-      setNewProduct({ name: '', price: '', description: '', category: '' });
-      setImageFile(null);
+    if (imageFile) {
+      const storageRef = ref(storage, `productImages/${imageFile.name}`);
+      const snapshot = await uploadBytes(storageRef, imageFile);
+      const imageUrl = await getDownloadURL(snapshot.ref);
+      updatedData.imageUrl = imageUrl;
     }
+    await updateDoc(doc(db, 'products', editingProductId), updatedData);
+    setProducts(products.map(product => (product.id === editingProductId ? { ...product, ...updatedData } : product)));
+    setNewProduct({ name: '', price: '', description: '', category: '' });
+    setImageFile(null);
+    setEditingProductId(null);
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-6">
-      <Typography variant="h4" className="mb-6 text-center font-bold text-blue-600">Admin Dashboard</Typography>
+    <div className="container m-20 mx-auto card p-6">
+      <Typography variant="h4" align="center" gutterBottom>
+        Admin Dashboard
+      </Typography>
 
-      <Tabs value={tabIndex} onChange={handleTabChange} centered>
+      <Tabs value={tabIndex} onChange={handleTabChange} indicatorColor="primary" textColor="primary" centered>
         <Tab label="Products" />
         <Tab label="Purchases" />
       </Tabs>
 
-      {tabIndex === 0 && (
+      {tabIndex === 0 ? (
         <div>
-          <Typography variant="h6" className="mt-4 text-center">{editingProductId ? 'Edit Product' : 'Add New Product'}</Typography>
-          
-          <div className="bg-white p-4 rounded shadow-md">
-            <div className="flex flex-wrap gap-3">
-              <TextField
-                label="Product Name"
-                value={newProduct.name}
-                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                className="mr-4 mb-4"
-              />
-              <TextField
-                label="Price"
-                type="number"
-                value={newProduct.price}
-                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                className="mr-4 mb-4"
-              />
-              <TextField
-                label="Description"
-                value={newProduct.description}
-                onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                className="mr-4 mb-4"
-              />
-              <Select
-                label="Category"
-                value={newProduct.category}
-                onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                className="mr-4 mb-4"
-                displayEmpty
-              >
-                <MenuItem value="" disabled>
-                  Select Category
-                </MenuItem>
-                {categories.map((category) => (
-                  <MenuItem key={category} value={category}>
-                    {category}
-                  </MenuItem>
-                ))}
-              </Select>
-              <span className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center">
-                Upload Image
-                <input type="file" hidden onChange={(e) => setImageFile(e.target.files[0])} />
-              </span>
-              <span
-                className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center"
-                onClick={editingProductId ? () => handleSaveProduct(editingProductId) : handleAddProduct}
-              >
-                {editingProductId ? 'Save Changes' : 'Add Product'}
-              </span>
-            </div>
-          </div>
-
-          {/* Product List */}
+          <Typography variant="h6">Product List</Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>Price</TableCell>
+                  <TableCell>Description</TableCell>
                   <TableCell>Category</TableCell>
-                  <TableCell>Description</TableCell> {/* Added Description Column */}
-                  <TableCell>Image</TableCell> {/* Added Image Column */}
+                  <TableCell>Price</TableCell>
+                  <TableCell>Image</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {products.map((product) => (
+                {products.map(product => (
                   <TableRow key={product.id}>
                     <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.price}</TableCell>
+                    <TableCell>{product.description}</TableCell>
                     <TableCell>{product.category}</TableCell>
-                    <TableCell>{product.description}</TableCell> {/* Display Description */}
+                    <TableCell>${parseFloat(product.price || 0).toFixed(2)}</TableCell>
                     <TableCell>
-                      <img src={product.imageUrl} alt={product.name} style={{ width: 50, height: 50 }} /> {/* Display Image */}
+                      <img src={product.imageUrl} alt={product.name} width={50} height={50} onError={(e) => { e.target.src = '/placeholder.png'; }} />
                     </TableCell>
                     <TableCell>
-                      <Button color="primary" onClick={() => handleEditProduct(product)}>Edit</Button>
-                      <Button color="secondary" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
+                      <Button variant="contained" color="primary" onClick={() => {
+                        setEditingProductId(product.id);
+                        setNewProduct({
+                          name: product.name,
+                          price: product.price,
+                          description: product.description,
+                          category: product.category
+                        });
+                      }}>
+                        Edit
+                      </Button>
+                      <Button variant="contained" color="secondary" onClick={() => handleDeleteProduct(product.id)}>
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-        </div>
-      )}
+          
+          {/* Add or Edit Product */}
+          <div className="mt-4 space-y-4">
+            <TextField label="Product Name" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} fullWidth />
+            <TextField label="Price" value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} fullWidth />
+            <TextField label="Description" value={newProduct.description} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} fullWidth />
+            <Select value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })} fullWidth>
+              {categories.map(category => (
+                <MenuItem key={category} value={category}>{category}</MenuItem>
+              ))}
+            </Select>
+            <input type="file" onChange={e => setImageFile(e.target.files[0])} />
 
-      {tabIndex === 1 && (
+            {editingProductId ? (
+              <Button variant="contained" color="primary" onClick={handleEditProduct}>
+                Update Product
+              </Button>
+            ) : (
+              <Button variant="contained" color="primary" onClick={handleAddProduct}>
+                Add Product
+              </Button>
+            )}
+          </div>
+        </div>
+      ) : (
         <div>
-          <Typography variant="h6" className="mt-4 text-center">Purchases</Typography>
+          <Typography variant="h6">Purchase History</Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>Product Name</TableCell>
-                  <TableCell>Buyer</TableCell>
-                  <TableCell>Date</TableCell>
+                  <TableCell>Product ID</TableCell>
+                  <TableCell>Purchased By</TableCell>
                   <TableCell>Price</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Total</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchases.map((purchase) => (
+                {purchases.map(purchase => (
                   <TableRow key={purchase.id}>
-                    <TableCell>{purchase.productName}</TableCell>
-                    <TableCell>{purchase.buyer}</TableCell>
-                    <TableCell>{purchase.date}</TableCell>
-                    <TableCell>{purchase.price}</TableCell>
+                    <TableCell>{purchase.name}</TableCell>
+                    <TableCell>{purchase.id}</TableCell>
+                    <TableCell>{purchase.purchasedby}</TableCell>
+                    <TableCell>${parseFloat(purchase.price || 0).toFixed(2)}</TableCell>
+                    <TableCell>{purchase.quantity}</TableCell>
+                    <TableCell>${parseFloat(purchase.total || 0).toFixed(2)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
