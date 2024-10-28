@@ -85,7 +85,7 @@ function Products() {
               <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
                 {/* <p className="mt-2 text-sm text-gray-600">{product.description || product.category}</p> */}
-                <p className="mt-4 text-sm font-semibold text-indigo-600">{product.price}</p>
+                <p className="mt-4 text-sm font-semibold text-indigo-600">NGN{product.price}</p>
                 
                 {/* User Rating Display */}
                 <div className="flex items-center mt-1">
