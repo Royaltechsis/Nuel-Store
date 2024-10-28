@@ -1,5 +1,5 @@
-// pages/AdminDashboard.jsx
 import React, { useEffect, useState } from 'react';
+import { format, fromUnixTime } from 'date-fns'; // Import date-fns for formatting dates
 import {
   Typography,
   Button,
@@ -29,6 +29,8 @@ function AdminDashboard() {
   const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '', category: '' });
   const [imageFile, setImageFile] = useState(null);
   const [purchases, setPurchases] = useState([]);
+  const [filteredPurchases, setFilteredPurchases] = useState([]); // New state for filtered purchases
+  const [searchTerm, setSearchTerm] = useState(''); // New state for search input
   const [isAdmin, setIsAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editingProductId, setEditingProductId] = useState(null);
@@ -51,6 +53,7 @@ function AdminDashboard() {
       const purchasesSnapshot = await getDocs(purchasesCollection);
       const fetchedPurchases = purchasesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setPurchases(fetchedPurchases);
+      setFilteredPurchases(fetchedPurchases); // Initialize filtered purchases with all purchases
     };
     fetchPurchases();
   }, []);
@@ -72,6 +75,19 @@ function AdminDashboard() {
     };
     checkAdmin();
   }, []);
+
+  // Handle search
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearchTerm(value);
+    
+    // Filter purchases based on search term
+    const filtered = purchases.filter(purchase => 
+      purchase.purchasedby.toLowerCase().includes(value) || 
+      purchase.id.toLowerCase().includes(value)
+    );
+    setFilteredPurchases(filtered);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (!isAdmin) return <Navigate to="/" />;
@@ -145,7 +161,7 @@ function AdminDashboard() {
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.description}</TableCell>
                     <TableCell>{product.category}</TableCell>
-                    <TableCell>${parseFloat(product.price || 0).toFixed(2)}</TableCell>
+                    <TableCell>NGN {parseFloat(product.price || 0).toFixed(2)}</TableCell>
                     <TableCell>
                       <img src={product.imageUrl} alt={product.name} width={50} height={50} onError={(e) => { e.target.src = '/placeholder.png'; }} />
                     </TableCell>
@@ -196,28 +212,36 @@ function AdminDashboard() {
         </div>
       ) : (
         <div>
-          <Typography variant="h6">Purchase History</Typography>
+          <Typography variant="h6">Purchases List</Typography>
+          <TextField
+            label="Search by Email or Purchase ID"
+            variant="outlined"
+            value={searchTerm}
+            onChange={handleSearch}
+            fullWidth
+            margin="normal"
+          />
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Product Name</TableCell>
-                  <TableCell>Product ID</TableCell>
-                  <TableCell>Purchased By</TableCell>
+                  <TableCell>Item</TableCell>
+                  <TableCell>Purchase ID</TableCell>
                   <TableCell>Price</TableCell>
-                  <TableCell>Quantity</TableCell>
-                  <TableCell>Total</TableCell>
+                  <TableCell>Buyer</TableCell>
+                  
+                  <TableCell>Time</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {purchases.map(purchase => (
+                {filteredPurchases.map(purchase => (
                   <TableRow key={purchase.id}>
                     <TableCell>{purchase.name}</TableCell>
                     <TableCell>{purchase.id}</TableCell>
+                    <TableCell>NGN {purchase.price}</TableCell>
                     <TableCell>{purchase.purchasedby}</TableCell>
-                    <TableCell>${parseFloat(purchase.price || 0).toFixed(2)}</TableCell>
-                    <TableCell>{purchase.quantity}</TableCell>
-                    <TableCell>${parseFloat(purchase.total || 0).toFixed(2)}</TableCell>
+                    <TableCell>Time</TableCell>
+                    {/* <TableCell>{format(fromUnixTime(purchase.createdAt), 'MMM dd, yyyy HH:mm' || 'null')}</TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>

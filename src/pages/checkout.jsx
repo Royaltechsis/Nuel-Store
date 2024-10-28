@@ -12,6 +12,7 @@ function Checkout() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState('Anonymous'); // State for username
   const [email, setEmail] = useState('No Email'); // State for email
+  const [purchaseTime, setPurchaseTime] = useState(''); // State for purchase time
   const navigate = useNavigate();
 
   const handlePaymentMethodChange = (event) => {
@@ -32,6 +33,10 @@ function Checkout() {
     setUsername(user?.displayName || 'Anonymous');
     setEmail(user?.email || 'No Email');
 
+    // Get the current timestamp for purchase time
+    const timestamp = new Date().toISOString();
+    setPurchaseTime(timestamp); // Store the purchase time
+
     // Add each cart item to Firestore with user info
     try {
       const promises = cart.map(async (item) => {
@@ -41,11 +46,7 @@ function Checkout() {
           price: item.price,
           paymentMethod,
           quantity: item.quantity, // Adding the quantity field here
-          purchasedAt: new Date(),
-          // purchasedBy: {
-          //   username: user?.displayName || 'Anonymous',
-          //   email: user?.email || 'No Email',
-          // },
+          purchasedat: timestamp, // Add timestamp here
           purchasedby: user?.email,
         };
         await addDoc(collection(db, 'purchases'), purchaseData);
@@ -143,6 +144,8 @@ function Checkout() {
             <p className="font-semibold">Purchased By:</p>
             <p>{username}</p>
             <p>{email}</p>
+            <p className="font-semibold">Purchased At:</p>
+            <p>{new Date(purchaseTime).toLocaleString()}</p> {/* Display formatted purchase time */}
           </div>
 
           <div className="space-y-4">
