@@ -26,13 +26,13 @@ function Checkout() {
   };
 
   return (
-    <div>
-      <Typography variant="h4" className="mb-4">Checkout</Typography>
+    <div className="container w-8/12 justify-center mx-auto card m-20">
+      <h1 className="mb-4 font-bold text-3xl text-center p-4">Checkout</h1>
       {cart.length === 0 ? (
-        <Typography variant="body1">Your cart is empty.</Typography>
+        <h1 ClassName="mb-4 text-center text-lg">Your cart is empty.</h1>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Typography variant="h6">Payment Method</Typography>
+          <Typography variant="h6">Choose Payment Method</Typography>
           <RadioGroup value={paymentMethod} onChange={handlePaymentMethodChange}>
             <FormControlLabel value="creditCard" control={<Radio />} label="Credit/Debit Card" />
             <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
@@ -68,6 +68,15 @@ function Checkout() {
                 onChange={handleInputChange}
                 required
               />
+            </div>
+          )}
+          {paymentMethod === 'bankTransfer' && (
+            <div>
+              <span>Bank Name</span> : <span>Opay</span>
+              <span> Account Name</span> : <span>Abiodun Oseni</span>
+              <span>Account Number</span> : <span>9051787913</span>
+
+              <div>* Send proof of payment to the osenibunmi2023@gmail.com</div>
             </div>
           )}
 

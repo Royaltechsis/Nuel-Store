@@ -71,7 +71,7 @@ function Cart() {
                   {cart.map((item) => (
                     <tr key={item.id} className="border-b">
                       <td className="p-2 flex items-center">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover mr-4" />
+                        <img src={item.image || item.imageUrl} alt={item.name} className="w-16 h-16 object-cover mr-4" />
                         <div>
                           <Typography variant="body1" className="font-semibold">{item.name}</Typography>
                           <Typography variant="body2" className="text-gray-600">{item.size} | {item.brand}</Typography>
@@ -112,10 +112,10 @@ function Cart() {
                 <Typography variant="body1">Total price:</Typography>
                 <Typography variant="body1">${totalPrice.toFixed(2)}</Typography>
               </div>
-              <div className="flex justify-between mb-2">
+              {/* <div className="flex justify-between mb-2">
                 <Typography variant="body1">Discount:</Typography>
                 <Typography variant="body1 text-red-600">- $10.00</Typography>
-              </div>
+              </div> */}
               <div className="flex justify-between mb-4 font-bold">
                 <Typography variant="body1">Total:</Typography>
                 <Typography variant="body1">${(totalPrice - 10).toFixed(2)}</Typography>

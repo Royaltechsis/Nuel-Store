@@ -104,7 +104,7 @@ function Header() {
         {/* Mobile drawer */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false) }>
           <div
-            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md sm:hidden"
+            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md"
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
