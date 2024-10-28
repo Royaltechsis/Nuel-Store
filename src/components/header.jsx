@@ -92,12 +92,12 @@ function Header() {
           {/* Mobile menu button */}
           <IconButton
             edge="end"
-            color="inherit"
+            color="primary"
             aria-label="menu"
             onClick={toggleDrawer(true)}
             className="sm:hidden"
           >
-            <MenuIcon className="text-black sm:hidden" />
+            <MenuIcon className="text-blue-500 sm:hidden" />
           </IconButton>
         </nav>
 

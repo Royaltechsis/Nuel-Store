@@ -78,7 +78,7 @@ function Products() {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mt-10 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 mt-10 sm:grid-cols-3 lg:grid-cols-4 w-full">
           {filteredProducts.map((product) => (
             <Link to={`/products/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
               <img src={product.image || product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
