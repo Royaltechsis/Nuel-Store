@@ -54,8 +54,8 @@ function Header() {
   };
 
   return (
-    <header className="bg-white pb-6 lg:pb-0 shadow-md">
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <header className="bg-white sm:pb-6 lg:pb-0 shadow-md fixed z-10 top-0 w-full bg-transparent">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         {/* Large screen navigation */}
         <nav className="flex items-center justify-between h-16 lg:h-20">
           <Link to="/" className="flex-shrink-0">
@@ -102,9 +102,9 @@ function Header() {
         </nav>
 
         {/* Mobile drawer */}
-        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false) }>
           <div
-            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md"
+            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md sm:hidden"
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
