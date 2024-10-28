@@ -20,7 +20,7 @@ import { doc, getDoc, collection, addDoc, deleteDoc, updateDoc, getDocs } from '
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Navigate } from 'react-router-dom';
 
-const categories = ['Gadgets', 'Accessories', 'Software', 'Services', 'phones', 'wearables'];
+const categories = ['Gadgets', 'Accessories', 'Software', 'Services', 'Phones', 'Wearables'];
 
 function AdminDashboard() {
   const [tabIndex, setTabIndex] = useState(0); // 0: Products, 1: Purchases
@@ -146,7 +146,7 @@ function AdminDashboard() {
         <div>
           <Typography variant="h6" className="mt-4 text-center">{editingProductId ? 'Edit Product' : 'Add New Product'}</Typography>
           
-          <div className="bg-white p-4 rounded shadow-md ">
+          <div className="bg-white p-4 rounded shadow-md">
             <div className="flex flex-wrap gap-3">
               <TextField
                 label="Product Name"
@@ -172,20 +172,23 @@ function AdminDashboard() {
                 value={newProduct.category}
                 onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                 className="mr-4 mb-4"
+                displayEmpty
               >
+                <MenuItem value="" disabled>
+                  Select Category
+                </MenuItem>
                 {categories.map((category) => (
                   <MenuItem key={category} value={category}>
                     {category}
                   </MenuItem>
                 ))}
               </Select>
-              <span component="label" className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center" >
+              <span className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center">
                 Upload Image
                 <input type="file" hidden onChange={(e) => setImageFile(e.target.files[0])} />
               </span>
-              <span component="label" className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center" 
-                variant="contained"
-                color="primary"
+              <span
+                className="mr-4 mb-4 bg-blue-600 text-white p-2 rounded cursor-pointer align-center"
                 onClick={editingProductId ? () => handleSaveProduct(editingProductId) : handleAddProduct}
               >
                 {editingProductId ? 'Save Changes' : 'Add Product'}
@@ -201,6 +204,7 @@ function AdminDashboard() {
                   <TableCell>Name</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Category</TableCell>
+                  <TableCell>Description</TableCell> {/* Added Description Column */}
                   <TableCell>Image</TableCell> {/* Added Image Column */}
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -211,6 +215,7 @@ function AdminDashboard() {
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>{product.category}</TableCell>
+                    <TableCell>{product.description}</TableCell> {/* Display Description */}
                     <TableCell>
                       <img src={product.imageUrl} alt={product.name} style={{ width: 50, height: 50 }} /> {/* Display Image */}
                     </TableCell>
@@ -228,26 +233,24 @@ function AdminDashboard() {
 
       {tabIndex === 1 && (
         <div>
-          <Typography variant="h6" className="mt-4 text-center">Purchase History</Typography>
+          <Typography variant="h6" className="mt-4 text-center">Purchases</Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>Product Name</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Quantity</TableCell>
                   <TableCell>Buyer</TableCell>
                   <TableCell>Date</TableCell>
+                  <TableCell>Price</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {purchases.map((purchase) => (
                   <TableRow key={purchase.id}>
                     <TableCell>{purchase.productName}</TableCell>
-                    <TableCell>{purchase.price}</TableCell>
-                    <TableCell>{purchase.quantity}</TableCell>
                     <TableCell>{purchase.buyer}</TableCell>
-                    <TableCell>{new Date(purchase.date).toLocaleDateString()}</TableCell>
+                    <TableCell>{purchase.date}</TableCell>
+                    <TableCell>{purchase.price}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
