@@ -63,23 +63,23 @@ function Header() {
           </Link>
 
           <div className="hidden lg:flex lg:items-center lg:ml-auto lg:space-x-10">
-            <Link to="/" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Home</Link>
-            <Link to="/products" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Products</Link>
-            <Link to="/about" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">About</Link>
-            <Link to="/contact" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">Contact</Link>
+            <Link to="/" className="text-base font-medium text-blue-600 transition duration-200 hover:text-gray-600">Home</Link>
+            <Link to="/products" className="text-base font-medium text-blue-600 transition duration-200 hover:text-gray-600">Products</Link>
+            <Link to="/about" className="text-base font-medium text-blue-600 transition duration-200 hover:text-gray-600">About</Link>
+            <Link to="/contact" className="text-base font-medium text-blue-600 transition duration-200 hover:text-gray-600">Contact</Link>
             {isAdmin && (
-              <Link to="/admindashboard" className="text-base font-medium text-black transition duration-200 hover:text-blue-600">
+              <Link to="/admindashboard" className="text-base font-medium text-blue-600 transition duration-200 hover:text-gray-600">
                 Admin Dashboard
               </Link>
             )}
-            <IconButton component={Link} to="/cart" className="text-black hover:text-blue-600">
+            <IconButton component={Link} to="/cart" className="text-blue-600 hover:text-gray-600">
               <ShoppingCartIcon />
             </IconButton>
-            <IconButton component={Link} to="/profile" className="text-black hover:text-blue-600">
+            <IconButton component={Link} to="/profile" className="text-blue-600 hover:text-gray-600">
               <AccountCircleIcon />
             </IconButton>
             {user ? (
-              <Button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+              <Button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:text-gray-600">
                 Logout
               </Button>
             ) : (
@@ -110,31 +110,31 @@ function Header() {
             onKeyDown={toggleDrawer(false)}
           >
             <List className="px-6 space-y-1">
-              <ListItem button component={Link} to="/" className="text-base font-medium text-black hover:text-blue-600">
+              <ListItem button component={Link} to="/" className="text-base font-medium text-blue-600 hover:text-grey-600">
                 <ListItemText primary="Home" />
               </ListItem>
-              <ListItem button component={Link} to="/products" className="text-base font-medium text-black hover:text-blue-600">
+              <ListItem button component={Link} to="/products" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <ListItemText primary="Products" />
               </ListItem>
-              <ListItem button component={Link} to="/about" className="text-base font-medium text-black hover:text-blue-600">
+              <ListItem button component={Link} to="/about" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <ListItemText primary="About" />
               </ListItem>
-              <ListItem button component={Link} to="/contact" className="text-base font-medium text-black hover:text-blue-600">
+              <ListItem button component={Link} to="/contact" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <ListItemText primary="Contact" />
               </ListItem>
               {isAdmin && (
-                <ListItem button component={Link} to="/admindashboard" className="text-base font-medium text-black hover:text-blue-600">
+                <ListItem button component={Link} to="/admindashboard" className="text-base font-medium text-blue-600 hover:text-gray-600">
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
               )}
-              <ListItem button component={Link} to="/cart" className="text-base font-medium text-black hover:text-blue-600">
+              <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <IconButton>
                   <ShoppingCartIcon />
                 </IconButton>
                 <ListItemText primary="Cart" />
               </ListItem>
               {user ? (
-                <ListItem button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+                <ListItem button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-gray-700 hover:text-blue-600">
                   <ListItemText primary="Logout" />
                 </ListItem>
               ) : (
