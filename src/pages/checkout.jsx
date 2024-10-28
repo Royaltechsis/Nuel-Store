@@ -1,12 +1,15 @@
 // pages/Checkout.jsx
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { CartContext } from '../services/CartContext';
-import { Typography, TextField, Button, Radio, RadioGroup, FormControlLabel } from '@mui/material';
+import { Typography, TextField, Button, Radio, RadioGroup, FormControlLabel, Modal, Box } from '@mui/material';
 
 function Checkout() {
   const { cart } = useContext(CartContext);
-  const [paymentMethod, setPaymentMethod] = React.useState('creditCard');
-  const [cardDetails, setCardDetails] = React.useState({ number: '', expiry: '', cvv: '' });
+  const [paymentMethod, setPaymentMethod] = useState('creditCard');
+  const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '' });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
@@ -19,17 +22,19 @@ function Checkout() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Simulate payment processing (you can integrate a real payment gateway here)
-    console.log('Payment Method:', paymentMethod);
-    console.log('Card Details:', cardDetails);
-    alert('Payment processed successfully!'); // Placeholder for feedback
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    navigate('/'); // Redirect to home page
   };
 
   return (
     <div className="container w-8/12 justify-center mx-auto card m-20">
       <h1 className="mb-4 font-bold text-3xl text-center p-4">Checkout</h1>
       {cart.length === 0 ? (
-        <h1 ClassName="mb-4 text-center text-lg">Your cart is empty.</h1>
+        <h1 className="mb-4 text-center text-lg">Your cart is empty.</h1>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <Typography variant="h6">Choose Payment Method</Typography>
@@ -72,11 +77,10 @@ function Checkout() {
           )}
           {paymentMethod === 'bankTransfer' && (
             <div>
-              <span>Bank Name</span> : <span>Opay</span>
-              <span> Account Name</span> : <span>Abiodun Oseni</span>
-              <span>Account Number</span> : <span>9051787913</span>
-
-              <div>* Send proof of payment to the osenibunmi2023@gmail.com</div>
+              <span>Bank Name</span> : <span>Opay</span><br />
+              <span>Account Name</span> : <span>Abiodun Oseni</span><br />
+              <span>Account Number</span> : <span>9051787913</span><br />
+              <div>* Send proof of payment to osenibunmi2023@gmail.com</div>
             </div>
           )}
 
@@ -85,6 +89,48 @@ function Checkout() {
           </Button>
         </form>
       )}
+
+      {/* Order Summary Modal */}
+      <Modal open={isModalOpen} onClose={handleCloseModal} className="flex items-center justify-center">
+        <Box className="bg-white p-6 w-full max-w-lg relative rounded-lg shadow-lg">
+          <div className="absolute top-4 right-4">
+            <Button onClick={handleCloseModal} color="primary" variant="outlined">
+              Close
+            </Button>
+          </div>
+
+          {/* Watermark */}
+          <div className="absolute inset-0 flex justify-center items-center opacity-10 text-6xl font-bold text-gray-500">
+            UNVERIFIED
+          </div>
+
+          <h2 className="text-center text-2xl font-bold mb-4">Order Receipt</h2>
+          
+          {/* Receipt Content */}
+          <div className="space-y-4">
+            {cart.map((item, index) => (
+              <div key={index} className="flex justify-between border-b pb-2">
+                <div>
+                  <p className="font-semibold">{item.name}</p>
+                  <p className="text-gray-500">{item.description}</p>
+                </div>
+                <p className="font-semibold">
+                  ${parseFloat(item.price || 0).toFixed(2)}
+                </p>
+              </div>
+            ))}
+            <div className="mt-6 flex justify-between font-bold text-lg">
+              <p>Total</p>
+              <p>${cart.reduce((total, item) => total + parseFloat(item.price || 0), 0).toFixed(2)}</p>
+            </div>
+          </div>
+
+          {/* Download and Close Buttons */}
+          <Button color="primary" variant="contained" className="mt-4 w-full" onClick={handleCloseModal}>
+            Download as PDF
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 }
