@@ -78,14 +78,14 @@ function Products() {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 mt-10 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 mt-10 sm:grid-cols-3 lg:grid-cols-4">
           {filteredProducts.map((product) => (
             <Link to={`/products/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
               <img src={product.image || product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
               <div className="p-6">
                 <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
-                <p className="mt-2 text-sm text-gray-600">{product.description || product.category}</p>
-                <p className="mt-4 text-sm font-semibold text-indigo-600">${product.price}</p>
+                {/* <p className="mt-2 text-sm text-gray-600">{product.description || product.category}</p> */}
+                <p className="mt-4 text-sm font-semibold text-indigo-600">{product.price}</p>
                 
                 {/* User Rating Display */}
                 <div className="flex items-center mt-1">
@@ -106,7 +106,6 @@ function Products() {
                   className="mt-4 w-full flex items-center justify-center bg-indigo-600 hover:bg-indigo-700"
                 >
                   <ShoppingCartIcon className="mr-2" />
-                  Add to Cart
                 </Button>
               </div>
             </Link>

@@ -64,6 +64,7 @@ function Home() {
                     color="secondary"
                     size="large"
                     className="bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 font-bold rounded-md shadow-md hover:shadow-lg transition-all duration-200"
+                    href='./products'
                 >
                     Shop Now
                 </Button>
@@ -86,9 +87,6 @@ function Home() {
 
       {/* Featured Products Section */}
       <div className="py-12 px-6">
-        <Typography variant="h4" className="text-center font-bold mb-8">
-          Featured Products
-        </Typography>
 
         {/* Integrating Product List */}
         <ProductList /> {/* Display the product list with search and categories */}
