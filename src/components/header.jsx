@@ -54,7 +54,7 @@ function Header() {
   };
 
   return (
-    <header className="bg-white sm:pb-6 lg:pb-0 shadow-md fixed z-10 top-0 w-full bg-transparent">
+    <header className=" sm:pb-6 lg:pb-0 shadow-md fixed z-10 top-0 w-full bg-transparent">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         {/* Large screen navigation */}
         <nav className="flex items-center justify-between h-16 lg:h-20">

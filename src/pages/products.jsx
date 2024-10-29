@@ -130,7 +130,7 @@ function Products() {
                 <img src={product.image || product.imageUrl} alt={product.name} className="w-full h-40 object-cover rounded-md" />
                 <h3 className="mt-2 text-lg font-semibold text-gray-900">{product.name}</h3>
                 <p className="mt-1 text-sm text-gray-700">{product.description || product.category}</p>
-                <p className="mt-2 text-xl font-bold text-gray-900">${product.price}</p>
+                <p className="mt-2 text-xl font-bold text-gray-900">NGN{product.price}</p>
                 <div className="mt-4 flex items-center">
                   <Button variant="contained" color="primary" onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }} className="flex items-center">
                     <ShoppingCartIcon className="mr-1" /> Add to Cart
