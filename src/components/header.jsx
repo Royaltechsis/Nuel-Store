@@ -73,38 +73,44 @@ function Header() {
               </Link>
             )}
             <IconButton component={Link} to="/cart" className="text-blue-600 hover:text-gray-600">
-              <ShoppingCartIcon />
+              <ShoppingCartIcon className="text-blue-600 hover:text-gray-400"/>
             </IconButton>
-            <IconButton component={Link} to="/profile" className="text-blue-600 hover:text-gray-600">
-              <AccountCircleIcon />
-            </IconButton>
+
             {user ? (
-              <Button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:text-gray-600">
-                Logout
-              </Button>
-            ) : (
-              <Link to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
-                Get Started Now
-              </Link>
-            )}
+              <IconButton component={Link} to="/profile" className="text-blue-600">
+              <AccountCircleIcon className="text-blue-600 hover:text-gray-400" />
+            </IconButton>
+            ):
+            (
+              
+            <Link to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+            Get Started Now
+          </Link>
+            )
+          }
+           
+            
+            
           </div>
 
           {/* Mobile menu button */}
+          <div className='sm:hidden flex '>
           <IconButton
             edge="end"
             color="primary"
             aria-label="menu"
             onClick={toggleDrawer(true)}
-            className="sm:hidden"
+            className="hidden "
           >
-            <MenuIcon className="text-blue-500 sm:hidden" />
+            <MenuIcon className="text-blue-500 lg:hidden block" />
           </IconButton>
+          </div>
         </nav>
 
         {/* Mobile drawer */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false) }>
           <div
-            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md"
+            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md sm:hidden"
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -129,19 +135,27 @@ function Header() {
               )}
               <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <IconButton>
-                  <ShoppingCartIcon />
+                  <ShoppingCartIcon className="text-blue-600 hover:text-gray-600" />
                 </IconButton>
                 <ListItemText primary="Cart" />
               </ListItem>
               {user ? (
-                <ListItem button onClick={handleLogout} className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-gray-700 hover:text-blue-600">
-                  <ListItemText primary="Logout" />
-                </ListItem>
-              ) : (
-                <ListItem button component={Link} to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
-                  <ListItemText primary="Get Started Now" />
-                </ListItem>
-              )}
+                <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
+                <IconButton>
+                <AccountCircleIcon className="text-blue-600 hover:text-gray-600" />
+                </IconButton>
+                <ListItemText primary="Profile" />
+              </ListItem>
+              
+             
+            ):
+            (
+              
+            <Link to="/login" className="text-base font-medium text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-700">
+            Get Started Now
+          </Link>
+            )
+          }
             </List>
           </div>
         </Drawer>

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './pages/home.jsx';
 import Header from './components/header.jsx';
 import Login from './pages/login.jsx';
+import ProfilePage from './pages/profile.jsx';
 import Shop from './pages/shop.jsx';
 import Signup from './pages/signup.jsx';
 import ProductDetails from './pages/productdetails.jsx';
@@ -47,9 +48,14 @@ function App() {
                         {/* Routes for unauthenticated users */}
                         {!isAuthenticated ? (
                             <>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/products" element={<Products />} />
+                                <Route path="/shop" element={<Shop />} />
+                                <Route path="/products/:id" element={<ProductDetails />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/signup" element={<Signup />} />
-                                <Route path="*" element={<Navigate to="/login" />} />
+                                <Route path="*" element={<Navigate to="/login"  />} />
+                               
                             </>
                         ) : (
                             <>
@@ -59,6 +65,7 @@ function App() {
                                 <Route path="/products/:id" element={<ProductDetails />} />
                                 <Route path="/products" element={<Products />} />
                                 <Route path="/cart" element={<Cart />} />
+                                <Route path="/profile" element={<ProfilePage />} />
                                 <Route path="/checkout" element={<Checkout />} />
                                 
                                 {/* Admin dashboard route */}
