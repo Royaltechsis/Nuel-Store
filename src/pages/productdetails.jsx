@@ -6,6 +6,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase'; // Firestore setup
 import { CartContext } from '../services/CartContext';
 import products from '../components/productdata'; // Import local product data
+import { getAuth } from 'firebase/auth'; // Import Firebase Authentication
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -62,9 +63,11 @@ const ProductDetails = () => {
   }
 
   const handleBuyNow = () => {
-    const isAuthenticated = true; // Replace with actual authentication check
+    const auth = getAuth(); // Get the Firebase Auth instance
+    const isAuthenticated = !!auth.currentUser; // Check if a user is logged in
+    
     if (isAuthenticated) {
-      addToCart(product);
+      addToCart(product); // Add product to the cart
       setSnackbarMessage(`${product.name} has been added to the cart!`);
       setSnackbarSeverity('success');
       navigate('/cart');

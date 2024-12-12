@@ -7,6 +7,8 @@ import products from './productdata';
 import { Star } from '@mui/icons-material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Link } from 'react-router-dom'; // Import Link
+import { getAuth } from 'firebase/auth'; // Import Firebase Authentication
+
 
 function Products() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,6 +16,7 @@ function Products() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [fetchedProducts, setFetchedProducts] = useState([]);
+  const [snackbarSeverity, setSnackbarSeverity] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
@@ -37,6 +40,8 @@ function Products() {
   //   setSnackbarOpen(true);
   // };
   const handleAddToCart = (product) => {
+    const auth = getAuth(); // Get the Firebase Auth instance
+    const isAuthenticated = !!auth.currentUser; // Check if a user is logged in
     if (isAuthenticated) {
       addToCart(product);
       setSnackbarMessage(`${product.name} has been added to the cart!`);
@@ -123,7 +128,7 @@ function Products() {
         </div>
 
         <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-          <Alert onClose={handleCloseSnackbar} severity="success">{snackbarMessage}</Alert>
+          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>
         </Snackbar>
       </div>
     </section>
