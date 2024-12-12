@@ -31,12 +31,22 @@ function Products() {
     fetchProducts();
   }, []);
 
+  // const handleAddToCart = (product) => {
+  //   addToCart(product);
+  //   setSnackbarMessage(`${product.name} has been added to the cart!`);
+  //   setSnackbarOpen(true);
+  // };
   const handleAddToCart = (product) => {
-    addToCart(product);
-    setSnackbarMessage(`${product.name} has been added to the cart!`);
+    if (isAuthenticated) {
+      addToCart(product);
+      setSnackbarMessage(`${product.name} has been added to the cart!`);
+      setSnackbarSeverity('success');
+    } else {
+      setSnackbarMessage('Please log in to add products to the cart.');
+      setSnackbarSeverity('error');
+    }
     setSnackbarOpen(true);
   };
-
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -82,15 +92,15 @@ function Products() {
           {filteredProducts.map((product) => (
             <Link to={`/products/${product.id}`} key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
               <img src={product.image || product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-t-lg" />
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
+              <div className="p-2">
+                <h3 className="text-sm font-bold text-gray-800">{product.name}</h3>
                 {/* <p className="mt-2 text-sm text-gray-600">{product.description || product.category}</p> */}
-                <p className="mt-4 text-sm font-semibold text-indigo-600">NGN{product.price}</p>
+                <p className="mt-4 text-sm font-semibold text-indigo-600">NGN {product.price}</p>
                 
                 {/* User Rating Display */}
                 <div className="flex items-center mt-1">
                   {Array.from({ length: 5 }, (_, index) => (
-                    <Star key={index} className={index < product.rating ? "text-yellow-500" : "text-gray-300"} />
+                    <Star key={index} className={index < product.rating ? "text-yellow-500 " : "text-gray-300"} fontSize='small' />
                   ))}
                 </div>
 

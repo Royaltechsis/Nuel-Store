@@ -72,9 +72,12 @@ function Header() {
                 Admin Dashboard
               </Link>
             )}
-            <IconButton component={Link} to="/cart" className="text-blue-600 hover:text-gray-600">
-              <ShoppingCartIcon className="text-blue-600 hover:text-gray-400"/>
-            </IconButton>
+            
+            {user && (
+              <IconButton component={Link} to="/cart" className="text-blue-600 hover:text-gray-600">
+                <ShoppingCartIcon className="text-blue-600 hover:text-gray-400"/>
+              </IconButton>
+            )}
 
             {user ? (
               <IconButton component={Link} to="/profile" className="text-blue-600">
@@ -133,12 +136,15 @@ function Header() {
                   <ListItemText primary="Admin Dashboard" />
                 </ListItem>
               )}
-              <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
+              {user && (
+                <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <IconButton>
                   <ShoppingCartIcon className="text-blue-600 hover:text-gray-600" />
                 </IconButton>
                 <ListItemText primary="Cart" />
               </ListItem>
+              )}
+              
               {user ? (
                 <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <IconButton>

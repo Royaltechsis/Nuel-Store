@@ -74,7 +74,7 @@ function Cart() {
                         <img src={item.image || item.imageUrl} alt={item.name} className="w-16 h-16 object-cover mr-4" />
                         <div>
                           <Typography variant="body1" className="font-semibold">{item.name}</Typography>
-                          <Typography variant="body2" className="text-gray-600">{item.size} | {item.brand}</Typography>
+                          {/* <Typography variant="body2" className="text-gray-600">{item.size}  {item.brand}</Typography> */}
                         </div>
                       </td>
                       <td className="text-center p-2">
@@ -88,7 +88,7 @@ function Cart() {
                         />
                       </td>
                       <td className="text-center p-2">
-                        <Typography variant="body1" className="font-semibold">${item.price}</Typography>
+                        <Typography variant="body1" className="font-semibold">NGN {item.price}</Typography>
                       </td>
                       <td className="text-right p-2">
                         <Button
@@ -110,7 +110,7 @@ function Cart() {
               <Typography variant="h6" className="mb-4">Summary</Typography>
               <div className="flex justify-between mb-2">
                 <Typography variant="body1">Total price:</Typography>
-                <Typography variant="body1">${totalPrice.toFixed(2)}</Typography>
+                <Typography variant="body1">NGN {totalPrice.toFixed(2)}</Typography>
               </div>
               {/* <div className="flex justify-between mb-2">
                 <Typography variant="body1">Discount:</Typography>
@@ -118,7 +118,7 @@ function Cart() {
               </div> */}
               <div className="flex justify-between mb-4 font-bold">
                 <Typography variant="body1">Total:</Typography>
-                <Typography variant="body1">${(totalPrice - 10).toFixed(2)}</Typography>
+                {/* <Typography variant="body1">${(totalPrice - 10).toFixed(2)}</Typography> */}
               </div>
               <Button variant="contained" color="primary" onClick={handleCheckout} className="w-full mb-2">
                 Make Purchase

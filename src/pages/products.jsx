@@ -9,11 +9,12 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 function Products() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, isAuthenticated } = useContext(CartContext); // Ensure isAuthenticated is part of the context
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [fetchedProducts, setFetchedProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // To handle errors too
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,8 +32,14 @@ function Products() {
   }, []);
 
   const handleAddToCart = (product) => {
-    addToCart(product);
-    setSnackbarMessage(`${product.name} has been added to the cart!`);
+    if (isAuthenticated) {
+      addToCart(product);
+      setSnackbarMessage(`${product.name} has been added to the cart!`);
+      setSnackbarSeverity('success');
+    } else {
+      setSnackbarMessage('Please log in to add products to the cart.');
+      setSnackbarSeverity('error');
+    }
     setSnackbarOpen(true);
   };
 
@@ -56,8 +63,6 @@ function Products() {
   return (
     <section className="py-12 bg-white sm:py-16 lg:py-20">
       <div className="flex flex-col sm:flex-row max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Sticky Sidebar for Categories (Desktop and Tablet) */}
         <div className="hidden sm:block sm:w-1/4 lg:w-1/5 sticky top-20 h-auto">
           <h3 className="text-lg font-semibold mb-4">Categories</h3>
           <ul className="bg-gray-100 rounded-lg p-4">
@@ -86,7 +91,6 @@ function Products() {
           </ul>
         </div>
 
-        {/* Mobile Category Dropdown */}
         <div className="block sm:hidden mb-4 sticky top-5">
           <label htmlFor="categorySelect" className="block text-lg font-semibold mb-2">Select Category</label>
           <select
@@ -104,7 +108,6 @@ function Products() {
           </select>
         </div>
 
-        {/* Main Content */}
         <div className="flex-1 mt-4 sm:mt-0 sm:ml-4">
           <div className="max-w-md mx-auto text-center">
             <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Our Featured Items</h2>
@@ -141,7 +144,7 @@ function Products() {
           </div>
 
           <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleCloseSnackbar}>
-            <Alert onClose={handleCloseSnackbar} severity="success">{snackbarMessage}</Alert>
+            <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>
           </Snackbar>
         </div>
       </div>
