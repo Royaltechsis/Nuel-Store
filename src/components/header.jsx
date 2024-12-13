@@ -97,7 +97,7 @@ function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className='sm:hidden flex '>
+          <div className='sm:hidden block '>
           <IconButton
             edge="end"
             color="primary"
@@ -105,7 +105,7 @@ function Header() {
             onClick={toggleDrawer(true)}
             className="hidden "
           >
-            <MenuIcon className="text-blue-500 lg:hidden block" />
+            <MenuIcon className="text-blue-500 " />
           </IconButton>
           </div>
         </nav>
@@ -113,7 +113,7 @@ function Header() {
         {/* Mobile drawer */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false) }>
           <div
-            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md sm:hidden"
+            className="w-64 pt-4 pb-6 bg-white border border-gray-200 rounded-md shadow-md "
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -146,7 +146,7 @@ function Header() {
               )}
               
               {user ? (
-                <ListItem button component={Link} to="/cart" className="text-base font-medium text-blue-600 hover:text-gray-600">
+                <ListItem button component={Link} to="/profile" className="text-base font-medium text-blue-600 hover:text-gray-600">
                 <IconButton>
                 <AccountCircleIcon className="text-blue-600 hover:text-gray-600" />
                 </IconButton>
